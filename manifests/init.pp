@@ -40,6 +40,6 @@ class siteusers (
       comment  => 'root',
       password => $::root_pw,
   }
-  User <| groups == '$admingroup' |>
+  User <| groups == $admingroup |>
 
 }
