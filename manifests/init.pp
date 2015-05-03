@@ -41,5 +41,25 @@ class siteusers (
       password => $::root_pw,
   }
   User <| groups == $admingroup |>
+  User <||>
+  create_resources('siteusers::ssh_auth_keys',hiera('users'))
 
+}
+
+define siteusers::ssh_auth_keys (
+  $name,
+  $key,
+  $ensure  = present,
+  $type    = 'ssh-dss',
+  $user    = $name,
+  $options = []
+){
+  ssh_authorized_key{
+    $name:
+      ensure  => $ensure,
+      name    => $name,
+      type    => $type,
+      user    => $user,
+      options => $options,
+      key     => $key,
 }
