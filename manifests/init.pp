@@ -22,14 +22,12 @@ class siteusers (
   $groups = hiera('groups',{})
 
   # Turn all heira users in to virtual users.
-  create_resources('@group', $groups)
+  create_resources('group', $groups)
   $user_defaults = {
       managehome => true,
       ensure => present,
   }
-  create_resources('@user', $users, $user_defaults)
-
-  Group <||>
+  create_resources('user', $users, $user_defaults)
 
   user { 'root':
       ensure   => 'present',
@@ -40,26 +38,10 @@ class siteusers (
       comment  => 'root',
       password => $::root_pw,
   }
-  User <| groups == $admingroup |>
-  User <||>
-  create_resources('siteusers::ssh_auth_keys',hiera('users'))
 
-}
+  $ssh_authorized_keys = hiera_hash('ssh_authorized_keys', undef)
+  if ($ssh_authorized_keys != undef) {
+    create_resources('ssh_authorized_key', $ssh_authorized_keys)
+  }
 
-define siteusers::ssh_auth_keys (
-  $name,
-  $key,
-  $ensure  = present,
-  $type    = 'ssh-dss',
-  $user    = $name,
-  $options = []
-){
-  ssh_authorized_key{
-    $name:
-      ensure  => $ensure,
-      name    => $name,
-      type    => $type,
-      user    => $user,
-      options => $options,
-      key     => $key,
-}
+
