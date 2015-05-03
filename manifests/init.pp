@@ -44,4 +44,4 @@ class siteusers (
     create_resources('ssh_authorized_key', $ssh_authorized_keys)
   }
 
-
+}
