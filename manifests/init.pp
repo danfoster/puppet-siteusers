@@ -25,7 +25,8 @@ class siteusers (
   create_resources('group', $groups)
   $user_defaults = {
       managehome => true,
-      ensure => present,
+      ensure     => present,
+      shell      => '/bin/bash',
   }
   create_resources('user', $users, $user_defaults)
 
